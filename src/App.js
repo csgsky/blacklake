@@ -5,35 +5,35 @@
  */
 
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-} from 'react-native';
+import { createStore, applyMiddleware, compose } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import { Provider } from 'react-redux'
+import { createEpicMiddleware } from 'redux-observable'
 import Navigation from './config/router'
+
+import rootEpic from './epic/index'
+import rootReducer from './reducer/index'
+
+const epicMiddleware = createEpicMiddleware(rootEpic)
+
+console.disableYellowBox = true
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(
+    compose(
+      applyMiddleware(epicMiddleware)
+    )
+  )
+)
 
 export default class App extends Component {
   render() {
     return (
-      <Navigation />
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    color: 'red'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

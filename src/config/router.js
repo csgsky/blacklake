@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {StatusBar} from 'react-native'
-import Splash from '../page/splash/Splash'
 import {StackNavigator} from 'react-navigation'
+import Splash from '../page/splash/Splash'
+import Login from '../page/login/Login'
 
 class Navigation extends Component {
   constructor () {
@@ -22,7 +23,21 @@ const Navigator = StackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        header: null
+      }
     }
+  },
+  { initialRouteName: 'Splash',
+    navigationOptions: {
+      headerBackTitle: null,
+      headerTintColor: '#333333',
+      showIcon: true
+    },
+    mode: 'card'
   }
 )
 
