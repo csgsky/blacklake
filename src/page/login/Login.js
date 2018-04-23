@@ -16,6 +16,10 @@ class Login extends Component {
           <Text>{this.props.username}</Text>
           <Text>{this.props.password}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={{width: 100, height: 30, backgroundColor: 'blue'}}>
+          <Text>扫码</Text>
+        </TouchableOpacity>
+        <Text>二维码是：</Text>
       </View>
     );
   }

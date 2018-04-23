@@ -31,7 +31,7 @@ const Navigator = StackNavigator(
       }
     }
   },
-  { initialRouteName: 'Splash',
+  { initialRouteName: 'Login',
     navigationOptions: {
       headerBackTitle: null,
       headerTintColor: '#333333',
