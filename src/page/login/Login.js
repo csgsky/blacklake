@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, NativeModules} from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../action/loginAction'
-import theme from '../../config/theme'
 
 class Login extends Component {
 
@@ -16,7 +15,13 @@ class Login extends Component {
           <Text>{this.props.username}</Text>
           <Text>{this.props.password}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{width: 100, height: 30, backgroundColor: 'blue'}}>
+        <TouchableOpacity style={{width: 100, height: 30, backgroundColor: 'blue'}}
+          onPress={() => {
+            NativeModules.RouterExt.router({
+              toPage: 'ScanA',
+              name: 'allen'
+            })
+          }}>
           <Text>扫码</Text>
         </TouchableOpacity>
         <Text>二维码是：</Text>

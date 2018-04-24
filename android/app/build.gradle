@@ -94,17 +94,17 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.blacklake"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         ndk {
-            abiFilters 'armeabi', 'armeabi-v7a', 'mips', 'x86'
+            abiFilters 'armeabi-v7a'
         }
     }
     splits {
@@ -138,12 +138,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.facebook.react:react-native:+'
-    //    compile 'com.yanzhenjie.zbar:zbar:1.0.0'
+    compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
     // From node_modules
-    implementation files('libs/zbar-1.0.0.jar')
-    implementation files('libs/zbar-camera-1.0.0.jar')
+    compile project(path: ':zbarlibary')
 }
 
 // Run this once to be able to run the application with BUCK
