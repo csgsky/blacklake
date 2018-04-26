@@ -4,12 +4,12 @@ import { Observable } from 'rxjs/Rx';
 import { NavigationActions } from 'react-navigation';
 import SplashImage from '../../img/launch_screen.png';
 import theme from '../../config/theme'
-import {KEY_USER_TOKEN, save, get} from '../../core/Storage'
+import {KEY_USER_TOKEN, save} from '../../core/Storage'
 
 const resetActionLogin = NavigationActions.reset({
   index: 0,
   actions: [
-    NavigationActions.navigate({routeName: 'Login'})
+    NavigationActions.navigate({routeName: 'MainTab'})
   ]
 })
 
@@ -32,7 +32,7 @@ export default class Splash extends Component {
 
     const timer = Observable.timer(0, 1000).subscribe(
       (it) => {
-        if (it === 3) {
+        if (it === 1) {
           this.routerToLogin()
         }
       }

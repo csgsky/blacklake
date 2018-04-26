@@ -3,17 +3,8 @@ import {View, TouchableOpacity, Text, NativeModules} from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../action/loginAction'
-import {KEY_USER_TOKEN, get} from '../../core/Storage'
 
 class Login extends Component {
-
-  componentDidMount() {
-    get({
-      key: KEY_USER_TOKEN
-    }).then((res) => {
-      console.log('token: ' + res)
-    })
-  }
 
   render() {
     return (
