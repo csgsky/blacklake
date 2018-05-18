@@ -99,7 +99,7 @@ android {
 
     defaultConfig {
         applicationId "com.blacklake"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -142,6 +142,7 @@ dependencies {
     compile 'com.facebook.react:react-native:+'
     compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar'
     compile 'io.reactivex.rxjava2:rxjava:2.0.5'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
     // From node_modules
     compile project(path: ':zbarlibary')
 }

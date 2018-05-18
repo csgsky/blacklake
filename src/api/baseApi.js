@@ -4,8 +4,7 @@ const test = 'https://api2-test.blacklake.cn'
 const staging = 'https://api2-staging.blacklake.cn'
 const product = 'https://api2-product.blacklake.cn'
 
-const baseUrlWithoutToken = path => test + path
-
+const baseUrlWithoutToken = path => dev + path
 
 const contentType = 'application/json;charset=UTF-8'
 

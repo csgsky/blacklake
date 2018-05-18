@@ -1,6 +1,7 @@
 package com.blacklake.activity;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
@@ -14,6 +15,10 @@ import cn.bertsir.zbar.QrManager;
  */
 
 public class BaseReactActivity extends ReactActivity{
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     public void router(ReadableMap map) {
         String toPage = map.getString("toPage");
