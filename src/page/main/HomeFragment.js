@@ -4,7 +4,6 @@ import { FloatingAction } from 'react-native-floating-action'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../action/projectAction'
-import LetterAvatar from '../../widget/LetterAvatar'
 import theme from '../../config/theme'
 import TaskIcon from '../../img/task_tab.png'
 import TaskIconSelected from '../../img/task_tab_selected.png'
@@ -44,7 +43,7 @@ const floatingActions = [{
 }];
 
 class HomeFragment extends Component {
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = () => ({
     title: '项目管理',
     headerTitleStyle: {flex: 1, textAlign: 'center', color: 'black', fontWeight: 'normal', fontSize: 18}
   })
@@ -78,8 +77,11 @@ class HomeFragment extends Component {
           (name) => {
             NativeModules.RouterExt.router({
               toPage: 'ScanA',
-              name: 'allen'
-            })
+              name,
+              title: '全局扫码'
+            }).then((result) =>
+                console.log({result: '二维码是:' + result})
+            )
           }
         }
       />

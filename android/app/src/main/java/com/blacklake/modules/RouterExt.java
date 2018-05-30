@@ -1,10 +1,15 @@
 package com.blacklake.modules;
 
+import android.widget.Toast;
+
 import com.blacklake.activity.BaseReactActivity;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
 
 /**
  * Created by allen on 18/4/24.
@@ -16,9 +21,16 @@ public class RouterExt extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void router(ReadableMap map) {
+    public void router(ReadableMap map, Promise promise) {
         BaseReactActivity activity = (BaseReactActivity) getCurrentActivity();
-        activity.router(map);
+        AndPermission.with(activity)
+                .runtime()
+                .permission(Permission.CAMERA)
+                .onGranted(permission -> activity.router(map, promise))
+                .onDenied(permission -> Toast.makeText(activity, "拒绝权限", Toast.LENGTH_LONG).show())
+                .start();
+
+
     }
 
     @Override

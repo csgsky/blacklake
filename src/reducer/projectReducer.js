@@ -24,6 +24,11 @@ export default function login (state = initState, action = {}) {
         isRefreshing: false,
         page: state.page + 1
       }
+    case actionConst.ACTION_NETWORK_FAILED:
+      return {
+        ...state,
+        isRefreshing: false
+      }
     default:
       return state
   }
