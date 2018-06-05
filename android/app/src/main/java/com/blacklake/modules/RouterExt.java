@@ -3,7 +3,6 @@ package com.blacklake.modules;
 import android.widget.Toast;
 
 import com.blacklake.activity.BaseReactActivity;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -21,12 +20,12 @@ public class RouterExt extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void router(ReadableMap map, Promise promise) {
+    public void router(ReadableMap map) {
         BaseReactActivity activity = (BaseReactActivity) getCurrentActivity();
         AndPermission.with(activity)
                 .runtime()
                 .permission(Permission.CAMERA)
-                .onGranted(permission -> activity.router(map, promise))
+                .onGranted(permission -> activity.router(map))
                 .onDenied(permission -> Toast.makeText(activity, "拒绝权限", Toast.LENGTH_LONG).show())
                 .start();
 

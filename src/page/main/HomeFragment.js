@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, FlatList, RefreshControl, NativeModules} from 'react-native';
+import {View, FlatList, DeviceEventEmitter, RefreshControl, NativeModules} from 'react-native';
 import { FloatingAction } from 'react-native-floating-action'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -51,8 +51,17 @@ class HomeFragment extends Component {
   componentDidMount() {
     const {page, isRefreshing} = this.props
     this.props.actions.getProjects({page, isRefreshing})
+    DeviceEventEmitter.addListener('onScanningResult', this.onScanningResult);
   }
-  // <LetterAvatar name="C" size={80} radius={10} />
+
+  componentWillUnmount() {
+  }
+
+  onScanningResult = (e) => {
+    console.log({result: e.result})
+    NativeModules.HelperExt.finishActivity()
+  }
+
   render() {
     const {projects, isRefreshing} = this.props
     return (<View style={{flex: 1}}>
@@ -75,19 +84,22 @@ class HomeFragment extends Component {
         overlayColor={'rgba(68, 68, 68, 0.2)'}
         onPressItem={
           (name) => {
+            if (name === 'bt_created' ) {
+              alert("hahah")
+              return
+            }
             NativeModules.RouterExt.router({
               toPage: 'ScanA',
               name,
               title: '全局扫码'
-            }).then((result) =>
-                console.log({result: '二维码是:' + result})
-            )
+            })
           }
         }
       />
     </View>)
   }
 }
+
 
 const mapStateToProps = (state) => {
   const {project} = state

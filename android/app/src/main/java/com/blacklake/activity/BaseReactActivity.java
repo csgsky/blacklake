@@ -2,12 +2,16 @@ package com.blacklake.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
 
+import com.blacklake.MainApplication;
+import com.blacklake.R;
 import com.facebook.react.ReactActivity;
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import cn.bertsir.zbar.QrConfig;
 import cn.bertsir.zbar.QrManager;
@@ -20,16 +24,14 @@ public class BaseReactActivity extends ReactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d("BaseReactActivity", "====================");
     }
 
-    public void router(ReadableMap map, final Promise promise) {
+    public void router(ReadableMap map) {
         String toPage = map.getString("toPage");
         String title = map.getString("title");
         if ("ScanA".equals(toPage)) {
             final QrConfig qrConfig = new QrConfig.Builder()
-                    .setDesText("(识别二维码)")//扫描框下文字
+                    .setDesText("全新二维码必须扫码识别")//扫描框下文字
                     .setShowDes(true)//是否显示扫描框下面文字
                     .setShowLight(true)//显示手电筒按钮
                     .setShowTitle(true)//显示Title
@@ -43,19 +45,30 @@ public class BaseReactActivity extends ReactActivity {
                     .setPlaySound(true)//是否扫描成功后bi~的声音
                     .setIsOnlyCenter(true)//是否只识别框中内容(默认为全屏识别)
                     .setTitleText(title)//设置Tilte文字
-                    .setTitleBackgroudColor(Color.WHITE)//设置状态栏颜色
-                    .setTitleTextColor(Color.BLACK)//设置Title文字颜色
+                    .setTitleTextColor(Color.WHITE)//设置Title文字颜色
+                    .setTitleBackgroudColor(getResources().getColor(R.color.black_00))
                     .create();
-
 
             QrManager
                     .getInstance()
                     .init(qrConfig)
                     .startScan(BaseReactActivity.this, result -> {
-                        Toast.makeText(BaseReactActivity.this, result, Toast.LENGTH_SHORT).show();
-                        promise.resolve(result);
+//                        Toast.makeText(BaseReactActivity.this, result, Toast.LENGTH_LONG).show();
+                        WritableMap params = Arguments.createMap();
+                        params.putString("result", result);
+                        sendEvent(getReactContext(), "onScanningResult", params);
                     });
 
+        }
     }
-}
+
+    protected ReactContext getReactContext() {
+        MainApplication application = (MainApplication) getApplication();
+        return application.getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+    }
+
+    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
 }

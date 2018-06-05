@@ -1,8 +1,11 @@
 package cn.bertsir.zbar;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -33,13 +36,16 @@ public class QRActivity extends Activity implements View.OnClickListener {
     private ScanView sv;
     private ImageView mo_scanner_back;
     private ImageView iv_flash;
-    private ImageView iv_album;
+    //    private ImageView iv_album;
     private static final String TAG = "QRActivity";
+    public static final String FINISH_ACTIVITY = "finish_activity";
+    public static final String RE_SCAN_QRCODE = "re_scan_qrcode";
     private TextView textDialog;
     private TextView tv_title;
     private FrameLayout fl_title;
     private TextView tv_des;
     private QrConfig options;
+    private FinishActivityReceiver mRecevier;
 
 
     @Override
@@ -58,6 +64,49 @@ public class QRActivity extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.activity_qr);
         initView();
+
+        mRecevier = new FinishActivityReceiver();
+        registerFinishReceiver();
+    }
+
+    private void registerFinishReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(FINISH_ACTIVITY);
+        intentFilter.addAction(RE_SCAN_QRCODE);
+        registerReceiver(mRecevier, intentFilter);
+    }
+
+    private class  FinishActivityReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (FINISH_ACTIVITY.equals(intent.getAction())) {
+                QRActivity.this.finish();
+            }
+            if (RE_SCAN_QRCODE.equals(intent.getAction())) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                            QRActivity.this.reScan();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+
+        }
+    }
+
+    public void reScan() {
+        Log.d("BaseReactActivity", "test2");
+        if (cp != null) {
+            Log.d("BaseReactActivity", "test3");
+            cp.setScanCallback(resultCallback);
+            cp.start();
+        }
+        sv.onResume();
     }
 
 
@@ -87,18 +136,18 @@ public class QRActivity extends Activity implements View.OnClickListener {
         iv_flash = (ImageView) findViewById(R.id.iv_flash);
         iv_flash.setOnClickListener(this);
 
-        iv_album = (ImageView) findViewById(R.id.iv_album);
-        iv_album.setOnClickListener(this);
+//        iv_album = (ImageView) findViewById(R.id.iv_album);
+//        iv_album.setOnClickListener(this);
 
         tv_title = (TextView) findViewById(R.id.tv_title);
         fl_title = (FrameLayout) findViewById(R.id.fl_title);
         tv_des = (TextView) findViewById(R.id.tv_des);
 
-        iv_album.setVisibility(options.isShow_light() ? View.VISIBLE : View.GONE);
+//        iv_album.setVisibility(options.isShow_light() ? View.VISIBLE : View.GONE);
         fl_title.setVisibility(options.isShow_title() ? View.VISIBLE : View.GONE);
         iv_flash.setVisibility(options.isShow_light() ? View.VISIBLE : View.GONE);
-        iv_album.setVisibility(options.isShow_album() ? View.VISIBLE :View.GONE);
-        tv_des.setVisibility(options.isShow_des() ? View.VISIBLE :View.GONE);
+//        iv_album.setVisibility(options.isShow_album() ? View.VISIBLE :View.GONE);
+        tv_des.setVisibility(options.isShow_des() ? View.VISIBLE : View.GONE);
 
         tv_des.setText(options.getDes_text());
         tv_title.setText(options.getTitle_text());
@@ -114,14 +163,14 @@ public class QRActivity extends Activity implements View.OnClickListener {
     private ScanCallback resultCallback = new ScanCallback() {
         @Override
         public void onScanResult(String result) {
-            if(options.isPlay_sound()){
+            if (options.isPlay_sound()) {
                 soundPool.play(1, 1, 1, 0, 0, 1);
             }
             if (cp != null) {
                 cp.setFlash(false);
             }
             QrManager.getInstance().getResultCallback().onScanSuccess(result);
-            finish();
+//            finish();
         }
     };
 
@@ -131,6 +180,9 @@ public class QRActivity extends Activity implements View.OnClickListener {
         if (cp != null) {
             cp.setFlash(false);
             cp.stop();
+        }
+        if (mRecevier != null) {
+            unregisterReceiver(mRecevier);
         }
         soundPool.release();
     }
@@ -157,13 +209,14 @@ public class QRActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.iv_album) {
-            fromAlbum();
-        } else if (v.getId() == R.id.iv_flash) {
+//        if (v.getId() == R.id.iv_album) {
+//            fromAlbum();
+//        } else
+        if (v.getId() == R.id.iv_flash) {
             if (cp != null) {
                 cp.setFlash();
             }
-        }else if(v.getId() == R.id.mo_scanner_back){
+        } else if (v.getId() == R.id.mo_scanner_back) {
             finish();
         }
     }
@@ -183,19 +236,19 @@ public class QRActivity extends Activity implements View.OnClickListener {
                         final String qrcontent = QRUtils.getInstance().decodeQRcode(Qrbitmap);
                         Qrbitmap.recycle();
                         Qrbitmap = null;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(!TextUtils.isEmpty(qrcontent)){
-                                        closeProgressDialog();
-                                        QrManager.getInstance().getResultCallback().onScanSuccess(qrcontent);
-                                        finish();
-                                    }else {
-                                        Toast.makeText(getApplicationContext(), "识别失败！", Toast.LENGTH_SHORT).show();
-                                        closeProgressDialog();
-                                    }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtils.isEmpty(qrcontent)) {
+                                    closeProgressDialog();
+                                    QrManager.getInstance().getResultCallback().onScanSuccess(qrcontent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "识别失败！", Toast.LENGTH_SHORT).show();
+                                    closeProgressDialog();
                                 }
-                            });
+                            }
+                        });
                     } catch (Exception e) {
                         Log.e("Exception", e.getMessage(), e);
                     }
