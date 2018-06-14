@@ -59,7 +59,7 @@ const MainTab = TabNavigator({
   },
   Material: {
     screen: MaterialFragment,
-  navigationOptions: ({ navigation }) => ({
+    navigationOptions: ({ navigation }) => ({
       tabBarLabel: '物料',
       tabBarIcon: ({ focused }) => (
         <TabBarItem
@@ -90,7 +90,7 @@ const MainTab = TabNavigator({
     swipeEnabled: false,
     animationEnabled: false,
     lazy: true,
-    initialRouteName: 'Home',
+    initialRouteName: 'Task',
     tabBarOptions: {
       activeTintColor: '#0DC7A3',
       inactiveTintColor: '#9b9b9b',
